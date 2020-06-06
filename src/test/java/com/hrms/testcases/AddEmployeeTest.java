@@ -1,50 +1,63 @@
 package com.hrms.testcases;
 
-import org.testng.Assert;
 import org.testng.annotations.Test;
+import org.testng.Assert;
+import org.testng.annotations.DataProvider;
 
 import com.hrms.utils.CommonMethods;
 import com.hrms.utils.ConfigsReader;
+import com.hrms.utils.Constants;
+import com.hrms.utils.ExcelUtility;
 
 public class AddEmployeeTest extends CommonMethods {
 
-//		Automate user stories below:
-//		US 12678 As an Admin I should be able to create login credentials while adding employee
-//
-//		US 67789 As an admin while adding employee if I leave required fields empty I should see “Required” message
-//		Note: first name and last name are required fields
+	@Test(dataProvider = "userDataFromExcel", groups = { "homework", "addEmp", "regression" })
+	public void addEmployee(String firstName, String lastName, String username, String password) {
+		// System.out.println(firstName + " " + lastName + " " + username + " " +
+		// password);
 
-	@Test
-	public void loginCredentials() {
-
+		// login into HRMS
 		login.login(ConfigsReader.getProperty("username"), ConfigsReader.getProperty("password"));
-		dashboard.navigateToAddEmployee();
-		wait(3);
 
-		sendText(addEmp.firstName, "ziya");
-		sendText(addEmp.lastName, "sengul");
+		// navigate to Add Employee page
+		dashboard.navigateToAddEmployee();
+		wait(1);
+
+		// add employee information
+		sendText(addEmp.firstName, firstName);
+		sendText(addEmp.lastName, lastName);
+		// get EmployeeID
+		String expectedEmpId = addEmp.employeeId.getAttribute("value");
+
+		// click on Create Login Details
 		click(addEmp.checkboxLoginDetails);
-
-		sendText(addEmp.username, "hakki");
-		sendText(addEmp.password, "Ankar@_29");
-		sendText(addEmp.confirmPassword, "Ankar@_29");
-		wait(3);
+		wait(1);
+		sendText(addEmp.username, username);
+		sendText(addEmp.password, password);
+		sendText(addEmp.confirmPassword, password);
+		wait(1);
 		jsClick(addEmp.saveBtn);
-		Assert.assertTrue(true, "Error");
-		System.out.println("passed");
-		wait(4);
-	}
+		wait(1);
 
-//	@Test
-	public void requiredtest() {
-		login.login(ConfigsReader.getProperty("username"), ConfigsReader.getProperty("password"));
-		dashboard.navigateToAddEmployee();
-		wait(3);
-		sendText(addEmp.firstName, "ziya");
-		click(addEmp.saveBtn);
-
+		// validation
 		waitForVisibility(pdetails.lblPersonalDetails);
-		
+		String actualEmpId = pdetails.employeeId.getAttribute("value");
+		Assert.assertEquals(actualEmpId, expectedEmpId, "Employee ID did not match!");
+
+		// take screenshot
+		takeScreenshot(firstName + "_" + lastName);
 	}
 
-} 
+	@DataProvider(name = "userData")
+	public Object[][] getData() {
+		Object[][] data = { { "Rajma", "Capoora", "raj123435345", "AmirKhan_@123" },
+				{ "John", "Smith", "john123", "AmirKhan_@123" }, { "Mary", "Ann", "mary123", "AmirKhan_@123" },
+				{ "Rohani", "Sakhi", "rohani123", "AmirKhan_@123" }, { "Ali", "Tarlaci", "ali123", "AmirKhan_@123" }, };
+		return data;
+	}
+
+	@DataProvider(name = "userDataFromExcel")
+	public Object[][] getData2() {
+		return ExcelUtility.excelIntoArray(Constants.TESTDATA_FILEPATH, "EmployeeLoginCredentials");
+	}
+}

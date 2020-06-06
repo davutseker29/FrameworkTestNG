@@ -6,7 +6,7 @@ import org.testng.ITestResult;
 
 public class Listener implements ITestListener {
 	@Override
-	public void onStart(ITestContext context) {
+	public void onStart(ITestContext context) {//this listener executes based on <test> from xml file
 		System.out.println("Functionality Testing Start");
 	}
 
@@ -16,8 +16,9 @@ public class Listener implements ITestListener {
 	}
 
 	@Override
-	public void onTestStart(ITestResult result) {
+	public void onTestStart(ITestResult result) {//this listener executes when @Test method starts
 		System.out.println("Test Started " + result.getName());
+		BaseClass.report.createTest(result.getName());
 	}
 
 	@Override
