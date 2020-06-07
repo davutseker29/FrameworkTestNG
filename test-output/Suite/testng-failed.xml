@@ -5,14 +5,21 @@
     <listener class-name="com.hrms.testbase.Listener"/>
   </listeners>
   <test thread-count="5" name="Test(failed)">
+    <groups>
+      <run>
+        <include name="smoke"/>
+      </run>
+    </groups>
     <classes>
-      <class name="com.hrms.testcases.sauceParameterDemo">
+      <class name="com.hrms.testcases.LoginTest">
         <methods>
+          <include name="generateReport"/>
+          <include name="writeReport"/>
+          <include name="adminLogin"/>
           <include name="tearDown"/>
-          <include name="login"/>
           <include name="setUp"/>
         </methods>
-      </class> <!-- com.hrms.testcases.sauceParameterDemo -->
+      </class> <!-- com.hrms.testcases.LoginTest -->
     </classes>
   </test> <!-- Test(failed) -->
 </suite> <!-- Failed suite [Suite] -->

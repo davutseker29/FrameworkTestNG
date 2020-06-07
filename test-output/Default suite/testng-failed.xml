@@ -5,7 +5,9 @@
     <classes>
       <class name="com.hrms.testcases.AddEmployeeTest">
         <methods>
-          <include name="addEmployee"/>
+          <include name="generateReport"/>
+          <include name="addEmployee" invocation-numbers="2"/>
+          <include name="writeReport"/>
           <include name="tearDown"/>
           <include name="setUp"/>
         </methods>
